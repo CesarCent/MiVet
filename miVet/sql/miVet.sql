@@ -2,7 +2,7 @@ create table vet_user(
 	dni					    text primary KEY,
 	name				    text not null,
 	surname				    text not null,
-    password			    text default '123456',
+    password			    text NOT null,
 	birth_date			    date not null check( extract(year from age(birth_date)) > 18)    
 );
 
@@ -26,11 +26,11 @@ create table pet(
 	"owner" 	    		integer references client(id)
 );
 
-create table shift(
+create table appointment(
 	id			            serial primary key,
 	client_id			    serial references client(id),
 	pet_id				    serial references pet(id),
-	shift_date			    date,
+	appointment_date			    date,
 	taken					boolean default false,
 	diagnosis				text
 );
@@ -100,23 +100,23 @@ create or replace function pet_destroy(
 $$
     delete from pet where _id = id;
 $$language sql volatile strict;
-/*SHIFT*/
-create or replace function shift(
+/*appointment*/
+create or replace function appointment(
 	in _client_id 				integer,
 	in _pet_id					integer,
-	in _shift_date				date
-)returns shift as
+	in _appointment_date				date
+)returns appointment as
 $$
-	insert into shift( client_id , pet_id , shift_date )
-	values( _client_id , _pet_id , _shift_date ) 
+	insert into appointment( client_id , pet_id , appointment_date )
+	values( _client_id , _pet_id , _appointment_date ) 
 	returning *;
 $$language sql volatile;
 
-create or replace function shift_destroy(
+create or replace function appointment_destroy(
 	in _id                  integer
 )returns void as
 $$
-	delete from shift where _id = id ;
+	delete from appointment where _id = id ;
 $$ language sql volatile strict;
 
 /*FUNCTIONS*/
@@ -174,40 +174,40 @@ $$
 	select id, name, birth_date , "owner" from pet where "owner" = _id;
 $$ language sql stable strict;
 
-create or replace function shift_seach_by_client(
+create or replace function appointment_seach_by_client(
 	in _client_id				integer
-)returns setof shift as
+)returns setof appointment as
 $$
-	select id , client_id , pet_id , shift_date, taken , diagnosis from shift where client_id = _client_id ;
+	select id , client_id , pet_id , appointment_date, taken , diagnosis from appointment where client_id = _client_id ;
 $$ language sql stable strict;
 
-create or replace function shifts_for_date(
+create or replace function appointments_for_date(
 	in _date					date
 )returns bigint as 
 $$
-	select count( s2.client_id ) from shift s2 where s2.shift_date = _date;
+	select count( s2.client_id ) from appointment s2 where s2.appointment_date = _date;
 $$language sql stable strict;
 
-create or replace function shift_seach_by_date(
+create or replace function appointment_seach_by_date(
 	in _date					date
-)returns setof shift as
+)returns setof appointment as
 $$
-	select * from shift s2 where s2.shift_date = _date;
+	select * from appointment s2 where s2.appointment_date = _date;
 $$ language sql stable strict;
 
-create or replace function shift_seach_by_pet( 
+create or replace function appointment_seach_by_pet( 
 	in _id						integer
-)returns setof  shift as
+)returns setof  appointment as
 $$
-	select * from shift s2 where s2.pet_id = _id and s2.taken = true;
+	select * from appointment s2 where s2.pet_id = _id and s2.taken = true;
 $$ language sql stable strict;
 
-create or replace function updateShift( 
+create or replace function updateappointment( 
 	in _id				integer,
 	in _text			text
 )returns void as
 $$
-	update shift set taken = true, diagnosis = _text where shift.id = _id;
+	update appointment set taken = true, diagnosis = _text where appointment.id = _id;
 $$language sql volatile strict;
 
 
@@ -224,16 +224,16 @@ $$language plpgsql;
 
 create trigger delete_pets_without_owner before delete on client for each row execute procedure delete_pets();
 
-create or replace function delete_shifts()
+create or replace function delete_appointments()
 returns trigger as 
 $$
 	begin 
-		delete from shift where shift.pet_id = ( select id from pet where old.id = id );
+		delete from appointment where appointment.pet_id = ( select id from pet where old.id = id );
 	return old;
 	end;
 $$language plpgsql;
 
-create trigger delete_shifts_without_pet before delete on pet for each row execute procedure delete_shifts();
+create trigger delete_appointments_without_pet before delete on pet for each row execute procedure delete_appointments();
 
 /*querys*/
 select Employee('123456789', 'admin', 'DB', 'admin', '1-01-1990' , 'ADMIN' , 35000 );
