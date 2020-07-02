@@ -2,42 +2,42 @@ package ar.com.playmedia.model;
 
 import java.util.Date;
 
-public class Shift {
+public class Appointment {
     private Integer id;
     private Integer clientId;
     private Integer petId;
-    private Date shiftDate;
+    private Date appointmentDate;
     private Boolean taken;
     private String diagnosis;
 
-    public Shift() {
+    public Appointment() {
     }
 
-    public Shift(Integer id, Integer clientId, Integer petId, Date shiftDate) {
+    public Appointment(Integer id, Integer clientId, Integer petId, Date appointmentDate) {
         this.id = id;
         this.clientId = clientId;
         this.petId = petId;
-        this.shiftDate = shiftDate;
+        this.appointmentDate = appointmentDate;
 
         this.taken = false;
         this.diagnosis = "";
     }
 
-    public Shift(Integer id, Integer clientId, Integer petId, Date shiftDate, Boolean taken, String diagnosis) {
+    public Appointment(Integer id, Integer clientId, Integer petId, Date appointmentDate, Boolean taken, String diagnosis) {
         this.id = id;
         this.clientId = clientId;
         this.petId = petId;
-        this.shiftDate = shiftDate;
+        this.appointmentDate = appointmentDate;
 
         this.taken = taken;
         this.diagnosis = diagnosis;
     }
 
     /**
-     * @return the shiftDate
+     * @return the appointmentDate
      */
-    public Date getShiftDate() {
-        return shiftDate;
+    public Date getAppointmentDate() {
+        return appointmentDate;
     }
 
     /**
@@ -97,10 +97,10 @@ public class Shift {
     }
 
     /**
-     * @param shiftDate the shiftDate to set
+     * @param appointmentDate the appointmentDate to set
      */
-    public void setShiftDate(Date shiftDate) {
-        this.shiftDate = shiftDate;
+    public void setAppointmentDate(Date appointmentDate) {
+        this.appointmentDate = appointmentDate;
     }
 
     /**

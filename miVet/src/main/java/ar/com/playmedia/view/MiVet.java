@@ -23,8 +23,7 @@ public class MiVet extends View {
                     + " | | | | | | |  \\  /  __/ |_ \n" + " |_| |_| |_|_|   \\/ \\___|\\__|\n");
             System.out.println("\nBienvenido a miVet! Quien eres?\n");
 
-            System.out.println("1 - Soy un cliente.");
-            System.out.println("2 - Soy un empleado.");
+            System.out.println("1 - Ingresar.");
             System.out.println("\n0 - Salir.");
 
             selectedOption = keyboard.nextInt();
